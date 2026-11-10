@@ -2,97 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#14171b">
     <title>Página Personal - Carlos Rodolfo Morales Ruiz</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="dark-mode">
 
-    <!-- BARRA DE NAVEGACIÓN PRINCIPAL -->
-    <header class="navbar">
-        <div class="nav-container">
-            <button id="burguerBtn" class="btn-burguer">☰ Menú</button>
-            <nav id="navMenu" class="nav-menu">
-                <a href="#inicio">Inicio</a>
-                <a href="#pasatiempos">Pasatiempos</a>
-                <a href="#horario">Horario</a>
-                <a href="#musica-seccion">Música</a>
-                <a href="#juegos-seccion">Juegos</a>
-                <a href="#trabajos">Trabajos</a>
-                <a href="#frase">Frase</a>
-                <a href="#contacto">Contacto</a>
-            </nav>
-        </div>
+    <!-- APP SHELL: contenedor maestro de una sola vista -->
+    <div class="app pwa-container">
 
-        <h1>Mi Página Personal</h1>
+        <!-- BARRA SUPERIOR -->
+        <header class="topbar">
+            <button id="menuBtn" class="icon-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMenu">☰</button>
+            <h1 id="viewTitle">🏠 Inicio</h1>
+            <button id="themeBtn" class="icon-btn" aria-label="Cambiar tema">☀️ Claro</button>
+        </header>
 
-        <button id="themeBtn" class="btn-toggle">🌙 Modo</button>
-    </header>
+        <!-- MENÚ DESPLEGABLE (hamburguesa) -->
+        <nav id="navMenu" class="nav-menu" aria-label="Navegación principal">
+            <button class="nav-link active" data-view="inicio">🏠 Inicio</button>
+            <button class="nav-link" data-view="pasatiempos">📌 Pasatiempos</button>
+            <button class="nav-link" data-view="horario">📅 Horario</button>
+            <button class="nav-link" data-view="musica">🎵 Música</button>
+            <button class="nav-link" data-view="juegos">🎮 Juegos</button>
+            <button class="nav-link" data-view="trabajos">📋 Trabajos</button>
+            <button class="nav-link" data-view="frase">💬 Frase</button>
+        </nav>
 
-    <!-- CARRUSEL INICIAL -->
-    <div class="carrusel" id="inicio">
-        <div class="carrusel-imagenes">
-            <img src="devilmay.jpg" alt="Juego">
-            <img src="ciber.jpg" alt="Estudio">
-            <img src="lenguaje.jpg" alt="Idioma">
-        </div>
-    </div>
+        <!-- ÁREA DE VISTAS (solo una visible a la vez) -->
+        <main class="views">
 
-    <div class="contenedor">
+            <!-- INICIO -->
+            <section class="view" id="view-inicio">
+                <div class="hero" aria-label="Galería">
+                    <div class="slide" style="background-image:url('devilmay.jpg')" role="img" aria-label="Juego"></div>
+                    <div class="slide" style="background-image:url('ciber.jpg')" role="img" aria-label="Estudio"></div>
+                    <div class="slide" style="background-image:url('lenguaje.jpg')" role="img" aria-label="Idioma"></div>
+                </div>
+                <p class="intro"><strong>Carlos Rodolfo Morales Ruiz</strong><br><span>Diseño Web II · elige una sección</span></p>
+                <div class="tiles">
+                    <button class="tile" data-go="pasatiempos"><span>📌</span>Pasatiempos</button>
+                    <button class="tile" data-go="horario"><span>📅</span>Horario</button>
+                    <button class="tile" data-go="musica"><span>🎵</span>Música</button>
+                    <button class="tile" data-go="juegos"><span>🎮</span>Juegos</button>
+                    <button class="tile" data-go="trabajos"><span>📋</span>Trabajos</button>
+                    <button class="tile" data-go="frase"><span>💬</span>Frase</button>
+                </div>
+            </section>
 
-        <!-- PASATIEMPOS E INTERESES -->
-        <section id="pasatiempos" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">📌 Pasatiempos e Intereses</h2>
-                <button class="btn-seccion-burguer" onclick="toggleSeccion('pasatiempos-content', this)" aria-expanded="true">☰</button>
-            </div>
-            <div id="pasatiempos-content" class="seccion-contenido">
-                <div class="grid-2">
-                    <div class="tarjeta">
-                        <h3>⏳ Pasatiempos (No productivo)</h3>
-                        <ul>
-                            <li>Jugar videojuegos</li>
-                            <li>Escuchar música</li>
-                            <li>Nadar</li>
-                        </ul>
+            <!-- PASATIEMPOS (acordeón: solo uno abierto) -->
+            <section class="view" id="view-pasatiempos">
+                <div class="acc">
+                    <div class="acc-item">
+                        <button class="acc-head" aria-expanded="true">⏳ Pasatiempos (No productivo) <i>▾</i></button>
+                        <div class="acc-body" style="display:block">
+                            <ul class="lista">
+                                <li>Jugar videojuegos</li>
+                                <li>Escuchar música</li>
+                                <li>Nadar</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="tarjeta">
-                        <h3>🎯 Intereses (Productivo)</h3>
-                        <ul>
-                            <li>Aprendiendo diferentes idiomas</li>
-                            <li>Estudiando ciberseguridad</li>
-                        </ul>
+                    <div class="acc-item">
+                        <button class="acc-head" aria-expanded="false">🎯 Intereses (Productivo) <i>▾</i></button>
+                        <div class="acc-body">
+                            <ul class="lista">
+                                <li>Aprendiendo diferentes idiomas</li>
+                                <li>Estudiando ciberseguridad</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- HORARIO INFALTABLE DIARIO -->
-        <section id="horario" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">📅 Horario Infaltable Diario</h2>
-                <button class="btn-seccion-burguer" onclick="toggleSeccion('horario-content', this)" aria-expanded="true">☰</button>
-            </div>
-            <div id="horario-content" class="seccion-contenido">
-                <table>
-                    <tr><th>Hora</th><th>Actividad</th></tr>
-                    <tr><td>7:00 — 8:00</td><td>Desayuno y preparación</td></tr>
-                    <tr><td>8:00 — 12:00</td><td>Estudio</td></tr>
-                    <tr><td>13:00 — 14:00</td><td>Almuerzo</td></tr>
-                    <tr><td>15:00 — 17:00</td><td>Estudios y aprendizaje</td></tr>
-                    <tr><td>18:00 — 19:00</td><td>Ejercicio o sacar a mi perro</td></tr>
-                    <tr><td>20:00 — 23:00</td><td>Jugar o hacer mis trabajos</td></tr>
+            <!-- HORARIO -->
+            <section class="view" id="view-horario">
+                <table class="tabla">
+                    <thead><tr><th>Hora</th><th>Actividad</th></tr></thead>
+                    <tbody>
+                        <tr data-ini="7" data-fin="8"><td>7:00 — 8:00</td><td>Desayuno y preparación</td></tr>
+                        <tr data-ini="8" data-fin="12"><td>8:00 — 12:00</td><td>Estudio</td></tr>
+                        <tr data-ini="13" data-fin="14"><td>13:00 — 14:00</td><td>Almuerzo</td></tr>
+                        <tr data-ini="15" data-fin="17"><td>15:00 — 17:00</td><td>Estudios y aprendizaje</td></tr>
+                        <tr data-ini="18" data-fin="19"><td>18:00 — 19:00</td><td>Ejercicio o sacar a mi perro</td></tr>
+                        <tr data-ini="20" data-fin="23"><td>20:00 — 23:00</td><td>Jugar o hacer mis trabajos</td></tr>
+                    </tbody>
                 </table>
-            </div>
-        </section>
+                <p class="nota">La fila resaltada es la actividad de ahora.</p>
+            </section>
 
-        <!-- MÚSICA: DOBLE SELECCIÓN (género → artista) -->
-        <section id="musica-seccion" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">🎵 Música</h2>
-                <button class="btn-seccion-burguer" onclick="toggleSeccion('musica-content', this)" aria-expanded="true">☰</button>
-            </div>
-            <div id="musica-content" class="seccion-contenido">
+            <!-- MÚSICA (doble select: género → artista) -->
+            <section class="view" id="view-musica">
                 <div class="filtros-doble">
                     <select id="selGenero" aria-label="Género">
                         <option value="todos">Todos los géneros</option>
@@ -107,63 +108,65 @@
                     </select>
                 </div>
 
-                <div class="grid-2">
-                    <div class="card-musica tarjeta" data-genero="romantica" data-artista="Chayanne">
+                <div class="grid-2" id="gridMusica">
+                    <div class="card-musica card" data-genero="romantica" data-artista="Chayanne">
                         <h3>Chayanne</h3><p>💖 Romántica · "Torero"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="romantica" data-artista="Ricardo Arjona">
+                    <div class="card-musica card" data-genero="romantica" data-artista="Ricardo Arjona">
                         <h3>Ricardo Arjona</h3><p>💖 Romántica · "Historia de taxi"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="romantica" data-artista="José José">
+                    <div class="card-musica card" data-genero="romantica" data-artista="José José">
                         <h3>José José</h3><p>💖 Romántica · "El triste"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="rap" data-artista="Kanye West">
+                    <div class="card-musica card" data-genero="rap" data-artista="Kanye West">
                         <h3>Kanye West</h3><p>🎤 Rap · "Stronger"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="rap" data-artista="Tyler, the Creator">
+                    <div class="card-musica card" data-genero="rap" data-artista="Tyler, the Creator">
                         <h3>Tyler, the Creator</h3><p>🎤 Rap · "EARFQUAKE"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="rock" data-artista="Rammstein">
+                    <div class="card-musica card" data-genero="rock" data-artista="Rammstein">
                         <h3>Rammstein</h3><p>🎸 Rock Industrial · "Du hast"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="rock" data-artista="Nine Inch Nails">
+                    <div class="card-musica card" data-genero="rock" data-artista="Nine Inch Nails">
                         <h3>Nine Inch Nails</h3><p>🎸 Rock Industrial · "Closer"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="regeton" data-artista="Wisin y Yandel">
+                    <div class="card-musica card" data-genero="regeton" data-artista="Wisin y Yandel">
                         <h3>Wisin y Yandel</h3><p>🔥 Reguetón · "Rakata"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="regeton" data-artista="Bad Bunny">
+                    <div class="card-musica card" data-genero="regeton" data-artista="Bad Bunny">
                         <h3>Bad Bunny</h3><p>🔥 Reguetón · "Tití me preguntó"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="techno" data-artista="Aphex Twin">
+                    <div class="card-musica card" data-genero="techno" data-artista="Aphex Twin">
                         <h3>Aphex Twin</h3><p>🎛️ Techno · "Windowlicker"</p>
                     </div>
-                    <div class="card-musica tarjeta" data-genero="techno" data-artista="Richie Hawtin">
+                    <div class="card-musica card" data-genero="techno" data-artista="Richie Hawtin">
                         <h3>Richie Hawtin</h3><p>🎛️ Techno · "Spastik" (Plastikman)</p>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- JUEGOS (FILTRO + MODAL) -->
-        <section id="juegos-seccion" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">🎮 Juegos Favoritos</h2>
-                <div class="header-acciones">
+                <div class="pager">
+                    <button class="btn-mini" id="musicaPrev" aria-label="Página anterior">‹</button>
+                    <span id="musicaInfo">1 / 1</span>
+                    <button class="btn-mini" id="musicaNext" aria-label="Página siguiente">›</button>
+                </div>
+            </section>
+
+            <!-- JUEGOS (filtro desplegable + modal) -->
+            <section class="view" id="view-juegos">
+                <div class="toolbar">
+                    <span class="toolbar-label">Categoría: <b id="juegosFiltroActual">Todos</b></span>
                     <div class="menu-filtro-container">
-                        <button id="juegosMenuBtn" class="btn-burguer">🕹️ Filtrar ▾</button>
+                        <button id="juegosMenuBtn" class="btn-mini ancho" aria-expanded="false" aria-controls="juegosMenu">🕹️ Filtrar ▾</button>
                         <div id="juegosMenu" class="dropdown-menu">
-                            <button class="btn-filtro-item" onclick="filtrarJuegos('todos')">Ver Todos</button>
-                            <button class="btn-filtro-item" onclick="filtrarJuegos('accion')">Acción / Horror</button>
-                            <button class="btn-filtro-item" onclick="filtrarJuegos('shooter')">Shooter / FPS</button>
-                            <button class="btn-filtro-item" onclick="filtrarJuegos('indie')">Indie / Roguelike</button>
+                            <button class="btn-filtro-item" data-cat="todos">Ver Todos</button>
+                            <button class="btn-filtro-item" data-cat="accion">Acción / Horror</button>
+                            <button class="btn-filtro-item" data-cat="shooter">Shooter / FPS</button>
+                            <button class="btn-filtro-item" data-cat="indie">Indie / Roguelike</button>
                         </div>
                     </div>
-                    <button class="btn-seccion-burguer" onclick="toggleSeccion('juegos-content', this)" aria-expanded="true">☰</button>
                 </div>
-            </div>
-            <div id="juegos-content" class="seccion-contenido">
-                <div class="grid-2">
+
+                <div class="grid-2" id="gridJuegos">
                     <div class="card-juego" data-categoria="accion" data-titulo="Resident Evil 4" data-descripcion="Survival Horror clásico con Leon S. Kennedy." style="background-image: url('resident.jpg');">
                         <h3>Resident Evil 4</h3>
                         <p>Acción / Survival Horror</p>
@@ -193,123 +196,115 @@
                         <p>Shooter Táctico</p>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- VENTANA MODAL PARA JUEGOS -->
-        <div id="modalJuego" class="modal-overlay">
-            <div class="modal-contenido">
-                <span id="cerrarModal" class="modal-cerrar">&times;</span>
-                <h3 id="modalTitulo">Título</h3>
-                <p id="modalDescripcion">Descripción...</p>
-            </div>
-        </div>
+                <div class="pager">
+                    <button class="btn-mini" id="juegosPrev" aria-label="Página anterior">‹</button>
+                    <span id="juegosInfo">1 / 1</span>
+                    <button class="btn-mini" id="juegosNext" aria-label="Página siguiente">›</button>
+                </div>
+            </section>
 
-        <!-- FORMULARIO DE TRABAJOS (VALIDACIÓN EN VIVO) -->
-        <section id="trabajos" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">📋 Solicitud de Proyecto</h2>
-                <button class="btn-seccion-burguer" onclick="toggleSeccion('trabajos-content', this)" aria-expanded="true">☰</button>
-            </div>
-            <div id="trabajos-content" class="seccion-contenido">
-                <form id="workForm" class="tarjeta" novalidate>
-                    <div class="form-group" data-tipo="nombre">
-                        <label for="nombreCliente">1. Nombre completo (nombre y 2 apellidos, solo letras):</label>
-                        <div class="form-row">
-                            <input type="text" id="nombreCliente" placeholder="Ej. Carlos Rodolfo Morales Ruiz" maxlength="60">
+            <!-- TRABAJOS: formulario por pasos (sin scroll) -->
+            <section class="view" id="view-trabajos">
+                <form id="workForm" class="card form-card" novalidate>
+                    <div class="progreso">
+                        <span id="pasoTexto">Paso 1 de 3</span>
+                        <div class="dots"><i class="dot active"></i><i class="dot"></i><i class="dot"></i></div>
+                    </div>
+
+                    <!-- Paso 1 -->
+                    <div class="paso" data-paso="0">
+                        <div class="form-group" data-tipo="nombre">
+                            <label for="nombreCliente">1. Nombre completo (nombre y 2 apellidos)</label>
+                            <input type="text" id="nombreCliente" placeholder="Ej. Carlos Rodolfo Morales Ruiz" maxlength="60" autocomplete="name">
+                            <span class="error-campo"></span>
+                        </div>
+                        <div class="form-group" data-tipo="email">
+                            <label for="emailCliente">2. Correo electrónico</label>
+                            <input type="text" id="emailCliente" placeholder="Ej. correo@dominio.com" maxlength="60" autocomplete="email">
+                            <span class="error-campo"></span>
+                        </div>
+                        <div class="form-group" data-tipo="telefono">
+                            <label for="telefono">3. Teléfono (8 dígitos, inicia con 6 o 7)</label>
+                            <input type="text" id="telefono" placeholder="Ej. 78426903" maxlength="8" inputmode="numeric" autocomplete="tel">
                             <span class="error-campo"></span>
                         </div>
                     </div>
 
-                    <div class="form-group" data-tipo="email">
-                        <label for="emailCliente">2. Correo electrónico:</label>
-                        <div class="form-row">
-                            <input type="text" id="emailCliente" placeholder="Ej. correo@dominio.com" maxlength="60">
-                            <span class="error-campo"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group" data-tipo="telefono">
-                        <label for="telefono">3. Teléfono (8 dígitos, inicia con 6 o 7):</label>
-                        <div class="form-row">
-                            <input type="text" id="telefono" placeholder="Ej. 78426903" maxlength="8" inputmode="numeric">
-                            <span class="error-campo"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group" data-tipo="servicio">
-                        <label for="tipoServicio">4. Tipo de servicio (solo letras):</label>
-                        <div class="form-row">
+                    <!-- Paso 2 -->
+                    <div class="paso" data-paso="1">
+                        <div class="form-group" data-tipo="servicio">
+                            <label for="tipoServicio">4. Tipo de servicio (solo letras)</label>
                             <input type="text" id="tipoServicio" placeholder="Ej. Ciberseguridad" maxlength="40">
                             <span class="error-campo"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group" data-tipo="presupuesto">
-                        <label for="presupuesto">5. Presupuesto en Bs. (solo números, mayor a 0):</label>
-                        <div class="form-row">
+                        <div class="form-group" data-tipo="presupuesto">
+                            <label for="presupuesto">5. Presupuesto en Bs. (solo números)</label>
                             <input type="text" id="presupuesto" placeholder="Ej. 500" maxlength="9" inputmode="numeric">
                             <span class="error-campo"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group" data-tipo="fecha">
-                        <label for="fechaLimite">6. Fecha límite de entrega (hoy o posterior):</label>
-                        <div class="form-row">
+                        <div class="form-group" data-tipo="fecha">
+                            <label for="fechaLimite">6. Fecha límite de entrega (hoy o posterior)</label>
                             <input type="date" id="fechaLimite">
                             <span class="error-campo"></span>
                         </div>
                     </div>
 
-                    <div class="form-group" data-tipo="descripcion">
-                        <label for="descripcion">7. Descripción (5 a 200 caracteres):</label>
-                        <div class="form-row">
+                    <!-- Paso 3 -->
+                    <div class="paso" data-paso="2">
+                        <div class="form-group" data-tipo="descripcion">
+                            <label for="descripcion">7. Descripción (5 a 200 caracteres)</label>
                             <input type="text" id="descripcion" placeholder="Detalle breve" maxlength="200">
                             <span class="error-campo"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group form-check" data-tipo="acepto">
-                        <div class="form-row">
-                            <input type="checkbox" id="acepto">
-                            <label for="acepto">8. Acepto que me contacten por este proyecto</label>
+                        <div class="form-group form-check" data-tipo="acepto">
+                            <div class="check-row">
+                                <input type="checkbox" id="acepto">
+                                <label for="acepto">8. Acepto que me contacten por este proyecto</label>
+                            </div>
                             <span class="error-campo"></span>
                         </div>
+                        <div id="alertaBox" aria-live="polite"></div>
                     </div>
 
-                    <button type="submit" class="btn-submit">Enviar Solicitud</button>
+                    <div class="form-nav">
+                        <button type="button" class="btn-sec" id="btnAtras">‹ Atrás</button>
+                        <button type="button" class="btn-submit" id="btnSiguiente">Siguiente ›</button>
+                        <button type="submit" class="btn-submit" id="btnEnviar">Enviar Solicitud</button>
+                    </div>
                 </form>
-                <div id="alertaBox"></div>
-            </div>
-        </section>
+            </section>
 
-        <!-- FRASE CARACTERÍSTICA -->
-        <section id="frase" class="seccion">
-            <div class="seccion-header">
-                <h2 class="titulo-seccion">💬 Frase</h2>
-                <button class="btn-seccion-burguer" onclick="toggleSeccion('frase-content', this)" aria-expanded="true">☰</button>
-            </div>
-            <div id="frase-content" class="seccion-contenido">
+            <!-- FRASE -->
+            <section class="view" id="view-frase">
                 <div class="frase">
                     "Sé extremadamente sutil, incluso hasta el punto de la informalidad."
                     <span>— Sun Tzu</span>
                 </div>
-            </div>
-        </section>
+            </section>
 
+            <!-- MODAL DE JUEGOS (dentro del app shell) -->
+            <div id="modalJuego" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+                <div class="modal-contenido">
+                    <button id="cerrarModal" class="modal-cerrar" aria-label="Cerrar">&times;</button>
+                    <h3 id="modalTitulo">Título</h3>
+                    <p id="modalDescripcion">Descripción...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- DOCK INFERIOR: contacto / redes -->
+        <footer class="dock" id="contacto">
+            <span class="dock-texto">Diseño Web II 😎✨</span>
+            <div class="redes">
+                <a href="https://wa.me/59178426903" target="_blank" rel="noopener noreferrer" class="boton-red whatsapp" title="WhatsApp" aria-label="WhatsApp">💬</a>
+                <a href="https://www.facebook.com/profile.php?id=100009459453658" target="_blank" rel="noopener noreferrer" class="boton-red facebook" title="Facebook" aria-label="Facebook">f</a>
+                <a href="https://www.tiktok.com/@kaarelrmr" target="_blank" rel="noopener noreferrer" class="boton-red tiktok" title="TikTok" aria-label="TikTok">♪</a>
+            </div>
+        </footer>
     </div>
 
-    <!-- PIE DE PÁGINA (REDES SOCIALES) -->
-    <footer id="contacto">
-        <h3 style="margin-bottom: 1rem; color: var(--resaltado); font-size: 1.2rem;">🌐 Redes Sociales</h3>
-        <div class="redes">
-            <a href="https://wa.me/59178426903" target="_blank" rel="noopener noreferrer" class="boton-red whatsapp" title="WhatsApp" aria-label="WhatsApp">💬</a>
-            <a href="https://www.facebook.com/profile.php?id=100009459453658" target="_blank" rel="noopener noreferrer" class="boton-red facebook" title="Facebook" aria-label="Facebook">f</a>
-            <a href="https://www.tiktok.com/@kaarelrmr" target="_blank" rel="noopener noreferrer" class="boton-red tiktok" title="TikTok" aria-label="TikTok">♪</a>
-        </div>
-        <p style="color: var(--texto-gris); font-size: 0.8rem; margin-top: 1rem;">Mi Página Personal | Diseño Web II 😎✨</p>
-    </footer>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="script.js"></script>
 </body>
 </html>

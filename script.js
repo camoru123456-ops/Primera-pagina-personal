@@ -1,144 +1,320 @@
-document.addEventListener("DOMContentLoaded", () => {
+$(function () {
 
-    // 1. MODO OSCURO / CLARO
-    const themeBtn = document.getElementById('themeBtn');
-    themeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        themeBtn.textContent = document.body.classList.contains('dark-mode') ? "☀️ Claro" : "🌙 Modo";
+    /* ============================================================
+       1. TEMA CLARO / OSCURO (con persistencia)
+       ============================================================ */
+    const $body = $("body");
+    const $themeBtn = $("#themeBtn");
+
+    function aplicarTema(oscuro) {
+        $body.toggleClass("dark-mode", oscuro);
+        $themeBtn.text(oscuro ? "☀️ Claro" : "🌙 Oscuro");
+        $("meta[name='theme-color']").attr("content", oscuro ? "#14171b" : "#e6e8ec");
+    }
+
+    let temaGuardado = null;
+    try { temaGuardado = localStorage.getItem("tema"); } catch (e) { /* sin storage */ }
+    aplicarTema(temaGuardado !== "claro");   // por defecto: oscuro
+
+    $themeBtn.on("click", function () {
+        const oscuro = !$body.hasClass("dark-mode");
+        aplicarTema(oscuro);
+        try { localStorage.setItem("tema", oscuro ? "oscuro" : "claro"); } catch (e) { /* sin storage */ }
     });
 
-    // 2. MENÚ DE NAVEGACIÓN
-    const burguerBtn = document.getElementById('burguerBtn');
-    const navMenu = document.getElementById('navMenu');
-    burguerBtn.addEventListener('click', () => navMenu.classList.toggle('show'));
-    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navMenu.classList.remove('show')));
+    /* ============================================================
+       2. NAVEGACIÓN INTERNA (SPA): menú hamburguesa + vistas
+       ============================================================ */
+    const $menuBtn = $("#menuBtn");
+    const $navMenu = $("#navMenu");
+    const $viewTitle = $("#viewTitle");
+    const titulos = {};
+    let vistaActual = null;
+    let cambiando = false;
 
-    // MENÚ DESPLEGABLE EN CADA SECCIÓN (mostrar / ocultar contenido)
-    window.toggleSeccion = function (idContenido, boton) {
-        const contenido = document.getElementById(idContenido);
-        const oculto = contenido.classList.toggle('oculto');
-        if (boton) {
-            boton.setAttribute('aria-expanded', String(!oculto));
-            boton.classList.toggle('cerrado', oculto);
-        }
-    };
+    $(".nav-link").each(function () {
+        titulos[$(this).data("view")] = $(this).text().trim();
+    });
 
-    // 3. MÚSICA: DOBLE SELECCIÓN (género → artista)
-    const selGenero = document.getElementById('selGenero');
-    const selArtista = document.getElementById('selArtista');
-    const tarjetasMusica = document.querySelectorAll('.card-musica');
+    function cerrarNav() {
+        $navMenu.stop(true, true).slideUp(160);
+        $menuBtn.attr("aria-expanded", "false");
+    }
 
-    function llenarArtistas(genero) {
-        selArtista.innerHTML = '<option value="todos">Todos los artistas</option>';
-        if (genero === 'todos') {
-            selArtista.disabled = true;
+    $menuBtn.on("click", function (e) {
+        e.stopPropagation();
+        $navMenu.stop(true, true).slideToggle(180);
+        $menuBtn.attr("aria-expanded", String($menuBtn.attr("aria-expanded") !== "true"));
+    });
+
+    function marcarActivo(id) {
+        $(".nav-link").removeClass("active").filter("[data-view='" + id + "']").addClass("active");
+        $viewTitle.text(titulos[id]);
+        try { history.replaceState(null, "", "#" + id); } catch (e) { /* sin history */ }
+    }
+
+    function irA(id) {
+        if (!titulos[id] || id === vistaActual || cambiando) return;
+        const $destino = $("#view-" + id);
+
+        if (vistaActual === null) {            // primera carga: sin animación de salida
+            $destino.show();
+            vistaActual = id;
+            marcarActivo(id);
             return;
         }
-        tarjetasMusica.forEach(card => {
-            if (card.dataset.genero === genero) {
-                const opt = document.createElement('option');
-                opt.value = card.dataset.artista;
-                opt.textContent = card.dataset.artista;
-                selArtista.appendChild(opt);
+
+        cambiando = true;
+        marcarActivo(id);
+        $("#view-" + vistaActual).fadeOut(140, function () {
+            $destino.scrollTop(0).fadeIn(200, function () { cambiando = false; });
+            vistaActual = id;
+        });
+    }
+
+    $(".nav-link").on("click", function () {
+        irA($(this).data("view"));
+        cerrarNav();
+    });
+    $(".tile").on("click", function () { irA($(this).data("go")); });
+
+    /* Cerrar menús al hacer clic fuera */
+    $(document).on("click", function (e) {
+        const $t = $(e.target);
+        if (!$t.closest("#navMenu, #menuBtn").length) cerrarNav();
+        if (!$t.closest("#juegosMenu, #juegosMenuBtn").length) cerrarJuegosMenu();
+    });
+
+    /* Vista inicial: hash válido o inicio */
+    const hashInicial = (location.hash || "").replace("#", "");
+    irA(titulos[hashInicial] ? hashInicial : "inicio");
+
+    /* ============================================================
+       3. CARRUSEL (fadeIn / fadeOut)
+       ============================================================ */
+    const $slides = $(".slide");
+    let slideIdx = 0;
+    if ($slides.length > 1) {
+        setInterval(function () {
+            if (vistaActual !== "inicio") return;
+            const $sale = $slides.eq(slideIdx);
+            slideIdx = (slideIdx + 1) % $slides.length;
+            $sale.fadeOut(500);
+            $slides.eq(slideIdx).fadeIn(500);
+        }, 3500);
+    }
+
+    /* ============================================================
+       4. ACORDEÓN DE PASATIEMPOS (solo un panel abierto)
+       ============================================================ */
+    $(".acc-head").on("click", function () {
+        const $head = $(this);
+        const $body = $head.next(".acc-body");
+        const abierto = $body.is(":visible");
+
+        $(".acc-body").not($body).stop(true, true).slideUp(220)
+            .prev(".acc-head").attr("aria-expanded", "false");
+
+        $body.stop(true, true).slideToggle(220);
+        $head.attr("aria-expanded", String(!abierto));
+    });
+
+    /* ============================================================
+       5. HORARIO: resalta la actividad actual
+       ============================================================ */
+    (function resaltarAhora() {
+        const d = new Date();
+        const h = d.getHours() + d.getMinutes() / 60;
+        $(".tabla tbody tr").each(function () {
+            const $f = $(this);
+            $f.toggleClass("ahora", h >= Number($f.data("ini")) && h < Number($f.data("fin")));
+        });
+    })();
+
+    /* ============================================================
+       6. PAGINADOR GENÉRICO (evita scroll en listas largas)
+       ============================================================ */
+    function crearPaginador(cfg) {
+        let pagina = 0;
+
+        function pintar($ok, total) {
+            cfg.$todos.addClass("is-hidden");
+            $ok.slice(pagina * cfg.porPagina, (pagina + 1) * cfg.porPagina).removeClass("is-hidden");
+            cfg.$info.text((pagina + 1) + " / " + total);
+            cfg.$prev.prop("disabled", pagina === 0);
+            cfg.$next.prop("disabled", pagina >= total - 1);
+        }
+
+        function render(animar) {
+            const $ok = cfg.$todos.filter(function () { return cfg.filtro($(this)); });
+            const total = Math.max(1, Math.ceil($ok.length / cfg.porPagina));
+            pagina = Math.min(pagina, total - 1);
+
+            if (animar) {
+                cfg.$grid.stop(true, true).fadeOut(110, function () {
+                    pintar($ok, total);
+                    cfg.$grid.fadeIn(180);
+                });
+            } else {
+                pintar($ok, total);
             }
-        });
-        selArtista.disabled = false;
+        }
+
+        cfg.$prev.on("click", function () { if (pagina > 0) { pagina--; render(true); } });
+        cfg.$next.on("click", function () { pagina++; render(true); });
+
+        return {
+            render: render,
+            reiniciar: function () { pagina = 0; render(true); }
+        };
     }
 
-    function filtrarMusica() {
-        const genero = selGenero.value;
-        const artista = selArtista.value;
-        tarjetasMusica.forEach(card => {
-            const okGenero = genero === 'todos' || card.dataset.genero === genero;
-            const okArtista = artista === 'todos' || card.dataset.artista === artista;
-            card.style.display = (okGenero && okArtista) ? '' : 'none';
-        });
-    }
+    /* ============================================================
+       7. MÚSICA: doble selección género → artista (dinámico)
+       ============================================================ */
+    const $selGenero = $("#selGenero");
+    const $selArtista = $("#selArtista");
+    const $tarjetasMusica = $(".card-musica");
 
-    selGenero.addEventListener('change', () => {
-        llenarArtistas(selGenero.value);
-        filtrarMusica();
+    const pagMusica = crearPaginador({
+        $todos: $tarjetasMusica,
+        $grid: $("#gridMusica"),
+        $prev: $("#musicaPrev"),
+        $next: $("#musicaNext"),
+        $info: $("#musicaInfo"),
+        porPagina: 4,
+        filtro: function ($c) {
+            const g = $selGenero.val();
+            const a = $selArtista.val();
+            return (g === "todos" || $c.attr("data-genero") === g) &&
+                   (a === "todos" || $c.attr("data-artista") === a);
+        }
     });
-    selArtista.addEventListener('change', filtrarMusica);
 
-    // FILTRO DE JUEGOS
-    const juegosMenuBtn = document.getElementById('juegosMenuBtn');
-    const juegosMenu = document.getElementById('juegosMenu');
-    juegosMenuBtn.addEventListener('click', (e) => {
+    function llenarArtistas(genero) {
+        $selArtista.html('<option value="todos">Todos los artistas</option>');
+        if (genero === "todos") {
+            $selArtista.prop("disabled", true);
+            return;
+        }
+        $tarjetasMusica.filter("[data-genero='" + genero + "']").each(function () {
+            const artista = $(this).attr("data-artista");
+            $("<option>").val(artista).text(artista).appendTo($selArtista);
+        });
+        $selArtista.prop("disabled", false);
+    }
+
+    $selGenero.on("change", function () {
+        llenarArtistas($selGenero.val());
+        pagMusica.reiniciar();
+    });
+    $selArtista.on("change", function () { pagMusica.reiniciar(); });
+    pagMusica.render(false);
+
+    /* ============================================================
+       8. JUEGOS: menú de categorías + modal
+       ============================================================ */
+    const $juegosMenu = $("#juegosMenu");
+    const $juegosMenuBtn = $("#juegosMenuBtn");
+    let categoriaJuego = "todos";
+
+    function cerrarJuegosMenu() {
+        $juegosMenu.stop(true, true).slideUp(120);
+        $juegosMenuBtn.attr("aria-expanded", "false");
+    }
+
+    const pagJuegos = crearPaginador({
+        $todos: $(".card-juego"),
+        $grid: $("#gridJuegos"),
+        $prev: $("#juegosPrev"),
+        $next: $("#juegosNext"),
+        $info: $("#juegosInfo"),
+        porPagina: 4,
+        filtro: function ($c) {
+            return categoriaJuego === "todos" || $c.attr("data-categoria") === categoriaJuego;
+        }
+    });
+    pagJuegos.render(false);
+
+    $juegosMenuBtn.on("click", function (e) {
         e.stopPropagation();
-        juegosMenu.classList.toggle('show');
+        $juegosMenu.stop(true, true).slideToggle(160);
+        $juegosMenuBtn.attr("aria-expanded", String($juegosMenuBtn.attr("aria-expanded") !== "true"));
     });
 
-    window.filtrarJuegos = function (categoria) {
-        document.querySelectorAll('.card-juego').forEach(card => {
-            card.style.display = (categoria === 'todos' || card.dataset.categoria === categoria) ? 'flex' : 'none';
-        });
-        juegosMenu.classList.remove('show');
-    };
-
-    // Cerrar menús al hacer clic fuera
-    document.addEventListener('click', (e) => {
-        if (!juegosMenu.contains(e.target)) juegosMenu.classList.remove('show');
-        if (!navMenu.contains(e.target) && e.target !== burguerBtn) navMenu.classList.remove('show');
+    $(".btn-filtro-item").on("click", function () {
+        categoriaJuego = $(this).attr("data-cat");
+        $("#juegosFiltroActual").text($(this).text());
+        cerrarJuegosMenu();
+        pagJuegos.reiniciar();
     });
 
-    // MODAL DE JUEGOS
-    const modalJuego = document.getElementById('modalJuego');
-    const modalTitulo = document.getElementById('modalTitulo');
-    const modalDescripcion = document.getElementById('modalDescripcion');
-    const cerrarModal = document.getElementById('cerrarModal');
+    const $modal = $("#modalJuego");
 
-    document.querySelectorAll('.card-juego').forEach(card => {
-        card.addEventListener('click', () => {
-            modalTitulo.textContent = card.dataset.titulo;
-            modalDescripcion.textContent = card.dataset.descripcion;
-            modalJuego.classList.add('active');
-        });
+    function cerrarModal() { $modal.stop(true, true).fadeOut(180); }
+
+    $(".card-juego").on("click", function () {
+        $("#modalTitulo").text($(this).attr("data-titulo"));
+        $("#modalDescripcion").text($(this).attr("data-descripcion"));
+        $modal.stop(true, true).fadeIn(200);
     });
-    cerrarModal.addEventListener('click', () => modalJuego.classList.remove('active'));
-    window.addEventListener('click', (e) => { if (e.target === modalJuego) modalJuego.classList.remove('active'); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modalJuego.classList.remove('active'); });
+    $("#cerrarModal").on("click", cerrarModal);
+    $modal.on("click", function (e) { if (e.target === this) cerrarModal(); });
 
-    // 4. VALIDACIÓN DEL FORMULARIO
-    const workForm = document.getElementById('workForm');
-    const formGrupos = document.querySelectorAll('.form-group');
+    $(document).on("keydown", function (e) {
+        if (e.key === "Escape") {
+            cerrarModal();
+            cerrarNav();
+            cerrarJuegosMenu();
+        }
+    });
+
+    /* ============================================================
+       9. FORMULARIO POR PASOS + VALIDACIÓN EN VIVO
+       ============================================================ */
+    const $form = $("#workForm");
+    const $pasos = $(".paso");
+    const $dots = $(".dot");
+    const $grupos = $(".form-group");
     const SOLO_LETRAS = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü]+$/;
+    const TOTAL_PASOS = $pasos.length;
+    let paso = 0;
 
     function fechaHoy() {
         const d = new Date();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        return `${d.getFullYear()}-${mm}-${dd}`;
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return d.getFullYear() + "-" + mm + "-" + dd;
     }
 
-    function validarCampo(tipo, input) {
-        if (tipo === 'acepto') return input.checked ? "" : "⚠ Debes aceptar";
+    function validarCampo(tipo, $input) {
+        if (tipo === "acepto") return $input.is(":checked") ? "" : "⚠ Debes aceptar";
 
-        const valor = input.value.trim();
+        const valor = $.trim($input.val());
         if (valor === "") return "⚠ Requerido";
 
         switch (tipo) {
-            case 'nombre': {
+            case "nombre": {
                 const palabras = valor.split(/\s+/);
-                if (!palabras.every(p => SOLO_LETRAS.test(p))) return "⚠ Solo letras";
+                if (!palabras.every(function (p) { return SOLO_LETRAS.test(p); })) return "⚠ Solo letras";
                 if (palabras.length < 3) return "⚠ Mín. nombre y 2 apellidos";
-                if (palabras.some(p => p.length < 2)) return "⚠ Cada palabra: mín. 2 letras";
+                if (palabras.some(function (p) { return p.length < 2; })) return "⚠ Cada palabra: mín. 2 letras";
                 return "";
             }
-            case 'email':
+            case "email":
                 return /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(valor) ? "" : "⚠ Correo inválido";
-            case 'telefono':
+            case "telefono":
                 return /^[67]\d{7}$/.test(valor) ? "" : "⚠ 8 dígitos, inicia con 6 o 7";
-            case 'servicio':
+            case "servicio":
                 if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(valor)) return "⚠ Solo letras";
                 return valor.length < 3 ? "⚠ Mín. 3 letras" : "";
-            case 'presupuesto':
+            case "presupuesto":
                 if (!/^[0-9]+$/.test(valor)) return "⚠ Solo números";
                 return Number(valor) <= 0 ? "⚠ Debe ser mayor a 0" : "";
-            case 'fecha':
+            case "fecha":
                 if (isNaN(new Date(valor))) return "⚠ Fecha inválida";
                 return valor < fechaHoy() ? "⚠ No puede ser pasada" : "";
-            case 'descripcion':
+            case "descripcion":
                 if (valor.length < 5) return "⚠ Mín. 5 caracteres";
                 return valor.length > 200 ? "⚠ Máx. 200 caracteres" : "";
             default:
@@ -146,70 +322,105 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function mostrarMensaje(span, msg) {
+    function mostrarMensaje($span, msg) {
         if (msg) {
-            span.textContent = msg;
-            span.className = "error-campo msg-error";
+            $span.text(msg).attr("class", "error-campo msg-error");
         } else {
-            span.textContent = "✔ OK";
-            span.className = "error-campo msg-exito";
+            $span.text("✔ OK").attr("class", "error-campo msg-exito");
         }
     }
 
-    // Presupuesto y teléfono: bloquea letras mientras se escribe
-    ['presupuesto', 'telefono'].forEach(id => {
-        document.getElementById(id).addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '');
+    function validarGrupo($g) {
+        const msg = validarCampo($g.data("tipo"), $g.find("input"));
+        mostrarMensaje($g.find(".error-campo"), msg);
+        return msg === "";
+    }
+
+    /* Presupuesto y teléfono: bloquea letras mientras se escribe */
+    $("#presupuesto, #telefono").on("input", function () {
+        this.value = this.value.replace(/\D/g, "");
+    });
+
+    $("#fechaLimite").attr("min", fechaHoy());
+
+    /* Validación en vivo */
+    $grupos.each(function () {
+        const $g = $(this);
+        const $input = $g.find("input");
+        const evento = $input.attr("type") === "checkbox" ? "change" : "input";
+        $input.on(evento, function () { validarGrupo($g); });
+    });
+
+    /* Navegación entre pasos */
+    function actualizarPasoUI() {
+        $("#pasoTexto").text("Paso " + (paso + 1) + " de " + TOTAL_PASOS);
+        $dots.each(function (i) { $(this).toggleClass("active", i <= paso); });
+        $("#btnAtras").prop("disabled", paso === 0);
+        $("#btnSiguiente").toggle(paso < TOTAL_PASOS - 1);
+        $("#btnEnviar").toggle(paso === TOTAL_PASOS - 1);
+    }
+
+    function irAPaso(n, enfocar) {
+        if (n === paso) { if (enfocar) enfocar.focus(); return; }
+        $pasos.eq(paso).fadeOut(120, function () {
+            paso = n;
+            $pasos.eq(paso).fadeIn(180, function () { if (enfocar) enfocar.focus(); });
+            actualizarPasoUI();
         });
-    });
-
-    // Fecha mínima = hoy
-    document.getElementById('fechaLimite').min = fechaHoy();
-
-    // Validación en vivo (bucle for)
-    for (let i = 0; i < formGrupos.length; i++) {
-        const grupo = formGrupos[i];
-        const input = grupo.querySelector('input');
-        const span = grupo.querySelector('.error-campo');
-        const tipo = grupo.dataset.tipo;
-        const evento = input.type === 'checkbox' ? 'change' : 'input';
-
-        input.addEventListener(evento, () => mostrarMensaje(span, validarCampo(tipo, input)));
     }
 
-    workForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        let valido = true;
+    function validarPasoActual() {
         let primerError = null;
+        $pasos.eq(paso).find(".form-group").each(function () {
+            if (!validarGrupo($(this)) && !primerError) primerError = $(this).find("input")[0];
+        });
+        if (primerError) primerError.focus();
+        return primerError === null;
+    }
 
-        for (let i = 0; i < formGrupos.length; i++) {
-            const grupo = formGrupos[i];
-            const input = grupo.querySelector('input');
-            const span = grupo.querySelector('.error-campo');
-            const msg = validarCampo(grupo.dataset.tipo, input);
+    $("#btnSiguiente").on("click", function () {
+        if (validarPasoActual() && paso < TOTAL_PASOS - 1) irAPaso(paso + 1);
+    });
+    $("#btnAtras").on("click", function () { if (paso > 0) irAPaso(paso - 1); });
 
-            if (msg) {
-                span.textContent = msg;
-                span.className = "error-campo msg-error";
-                valido = false;
-                if (!primerError) primerError = input;
-            }
+    /* Envío */
+    $form.on("submit", function (e) {
+        e.preventDefault();
+
+        if (paso < TOTAL_PASOS - 1) {          // Enter en pasos intermedios = Siguiente
+            $("#btnSiguiente").trigger("click");
+            return;
         }
 
-        const alertaBox = document.getElementById('alertaBox');
-        if (valido) {
-            alertaBox.innerHTML = '<p class="msg-exito" style="margin-top:8px;">✅ ¡Enviado con éxito!</p>';
-            workForm.reset();
-            formGrupos.forEach(g => {
-                const s = g.querySelector('.error-campo');
-                s.textContent = "";
-                s.className = "error-campo";
+        let pasoError = -1;
+        let inputError = null;
+
+        $pasos.each(function (i) {
+            $(this).find(".form-group").each(function () {
+                if (!validarGrupo($(this)) && pasoError === -1) {
+                    pasoError = i;
+                    inputError = $(this).find("input")[0];
+                }
             });
-            setTimeout(() => { alertaBox.innerHTML = ''; }, 4000);
-        } else {
-            alertaBox.innerHTML = '<p class="msg-error" style="margin-top:8px;">⚠ Corrige los errores.</p>';
-            primerError.focus();
+        });
+
+        const $alerta = $("#alertaBox");
+
+        if (pasoError !== -1) {
+            $alerta.html('<p class="msg-error">⚠ Corrige los errores.</p>').hide().fadeIn(180);
+            irAPaso(pasoError, inputError);
+            return;
         }
+
+        $alerta.html('<p class="msg-exito">✅ ¡Enviado con éxito!</p>').hide().fadeIn(200);
+        $form[0].reset();
+        $(".error-campo").text("").attr("class", "error-campo");
+
+        setTimeout(function () {
+            $alerta.fadeOut(250, function () { $alerta.empty().show(); });
+            irAPaso(0);
+        }, 2200);
     });
 
+    actualizarPasoUI();
 });
