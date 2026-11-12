@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Catálogo de Proyectos - Carlos Rodolfo Morales Ruiz</title>
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#f97316">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mi Página">
+
+    <link rel="stylesheet" href="styles_2.css">
+
+    <!-- Registro del Service Worker al cargar la ventana -->
+    <script>
+        window.addEventListener("load", function () {
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("./sw.js").catch(function (error) {
+                    console.warn("No se pudo registrar el Service Worker:", error);
+                });
+            }
+        });
+    </script>
+</head>
+<body class="modo-oscuro">
+
+    <!-- APP SHELL: misma estructura que index.html -->
+    <div class="aplicacion pwa-container">
+
+        <!-- CABECERA (HTML estático; el script la "hidrata") -->
+        <header class="cabecera" id="contenedorMenu" data-hidratado="false">
+            <button id="btnMenu" class="boton-icono boton-pendiente" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuPrincipal" data-desplegable="menuPrincipal" disabled>⏳</button>
+            <h1 class="titulo-vista" id="tituloVista">📦 Catálogo</h1>
+            <button id="btnRefrescar" class="boton-icono boton-pendiente" type="button" aria-label="Refrescar la vista actual" data-refrescar="vista" disabled><span class="icono-giro">🔄</span></button>
+            <button id="btnTema" class="boton-icono boton-pendiente" type="button" aria-label="Cambiar tema" disabled>Cargando…</button>
+        </header>
+
+        <!-- MENÚ DESPLEGABLE (hamburguesa) -->
+        <nav id="menuPrincipal" class="menu-principal menu-desplegable" aria-label="Navegación principal">
+            <p class="menu-grupo">Secciones</p>
+            <button class="menu-enlace menu-enlace--activo" type="button" data-vista="catalogo">📦 Catálogo</button>
+            <button class="menu-enlace" type="button" data-vista="estado">📡 Estado de la app</button>
+            <p class="menu-grupo">Módulos</p>
+            <a class="menu-enlace" href="index.html">👤 Portafolio</a>
+            <a class="menu-enlace menu-enlace--activo-modulo" href="index2.html" aria-current="page">📦 Catálogo de proyectos</a>
+        </nav>
+
+        <!-- ÁREA DE VISTAS -->
+        <main class="vistas">
+
+            <!-- CATÁLOGO -->
+            <section class="vista" id="vista-catalogo">
+                <div class="barra-filtro">
+                    <span>Categoría: <b id="etiquetaCatalogo">Todos</b></span>
+                    <div class="contenedor-menu">
+                        <button id="btnMenuCatalogo" class="boton-mini boton-mini--texto" type="button" aria-expanded="false" aria-controls="menuCatalogo" data-desplegable="menuCatalogo">🗂️ Filtrar ▾</button>
+                        <div id="menuCatalogo" class="menu-filtro menu-desplegable">
+                            <button class="menu-filtro-opcion" type="button" data-filtro="catalogo" data-valor="todos">Ver Todos</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="catalogo" data-valor="negocio">Webs de negocio</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="catalogo" data-valor="panel">Paneles</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="catalogo" data-valor="academico">Académico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cuadricula cuadricula--una lista-paginada" data-lista="catalogo" data-por-pagina="4">
+                    <article class="tarjeta tarjeta-proyecto elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="negocio" data-titulo="CyberZone" data-descripcion="Web de un ciber / centro de gaming con estaciones PS5, PC Gamer y Arcade. Hecha con HTML, CSS y jQuery.">
+                        <h3>CyberZone <span class="etiqueta-categoria">Negocio</span></h3>
+                        <p>Ciber y centro de gaming: PS5, PC Gamer y Arcade.</p>
+                    </article>
+                    <article class="tarjeta tarjeta-proyecto elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="negocio" data-titulo="KSI STUDIO" data-descripcion="Marca de muebles de lujo minimalista. Catálogo de 6 piezas (Silla Kora, Mesa Voxel, Sofá Neutra, entre otras) con precios en Bs.">
+                        <h3>KSI STUDIO <span class="etiqueta-categoria">Negocio</span></h3>
+                        <p>Muebles de lujo minimalista con catálogo de 6 piezas.</p>
+                    </article>
+                    <article class="tarjeta tarjeta-proyecto elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="panel" data-titulo="Vader Store" data-descripcion="Tienda de ropa y accesorios en TikTok Live. Incluye el panel «Bitácora y Panel Live», en un solo archivo HTML/CSS/JS con estilo cyber-neon.">
+                        <h3>Vader Store <span class="etiqueta-categoria">Panel</span></h3>
+                        <p>Panel «Bitácora y Panel Live» para ventas en TikTok Live.</p>
+                    </article>
+                    <article class="tarjeta tarjeta-proyecto elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="academico" data-titulo="Página personal" data-descripcion="Portafolio para Diseño Web II: una sola vista sin scroll, jQuery, modo oscuro/claro y soporte PWA para usarse sin conexión.">
+                        <h3>Página personal <span class="etiqueta-categoria">Académico</span></h3>
+                        <p>Este portafolio: SPA sin scroll y PWA offline.</p>
+                    </article>
+                </div>
+
+                <div class="paginador">
+                    <button class="boton-mini" type="button" data-pag="catalogo" data-dir="-1" aria-label="Página anterior">‹</button>
+                    <span data-pag-info="catalogo">1 / 1</span>
+                    <button class="boton-mini" type="button" data-pag="catalogo" data-dir="1" aria-label="Página siguiente">›</button>
+                </div>
+            </section>
+
+            <!-- ESTADO DE LA APP (panel secundario) -->
+            <section class="vista" id="vista-estado">
+                <div class="tarjeta">
+                    <dl class="lista-datos">
+                        <dt>Conexión</dt><dd id="datoConexion">—</dd>
+                        <dt>Service Worker</dt><dd id="datoServicio">—</dd>
+                        <dt>Caché</dt><dd id="datoCache">—</dd>
+                        <dt>Archivos guardados</dt><dd id="datoArchivos">—</dd>
+                        <dt>Modo de uso</dt><dd id="datoModo">—</dd>
+                    </dl>
+                    <div class="acciones-panel">
+                        <button id="btnInstalar" class="boton-principal es-oculto" type="button" style="margin-left:0">⬇ Instalar app</button>
+                        <button id="btnActualizar" class="boton-secundario" type="button">Buscar actualización</button>
+                        <button id="btnRecargarTodo" class="boton-secundario" type="button" data-refrescar="total">↻ Recargar app</button>
+                    </div>
+                </div>
+                <p class="nota-pie">Con la app guardada puedes abrir este catálogo sin internet.</p>
+            </section>
+
+            <!-- DIÁLOGO DE DETALLE -->
+            <div id="dialogoDetalle" class="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogoTitulo">
+                <div class="dialogo-caja">
+                    <button class="dialogo-cerrar" type="button" data-cerrar-dialogo aria-label="Cerrar">&times;</button>
+                    <h3 id="dialogoTitulo">Título</h3>
+                    <p id="dialogoTexto">Descripción...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- AVISO TEMPORAL -->
+        <div id="avisoEstado" class="aviso-estado" role="status" aria-live="polite"></div>
+
+        <!-- BARRA INFERIOR: estado de red + acciones + contacto -->
+        <footer class="barra-inferior" id="contacto">
+            <span id="estadoRed" class="estado-red" role="status" aria-live="polite">
+                <i class="estado-red__punto"></i>
+                <span class="estado-red__texto" id="estadoRedTexto">En línea</span>
+            </span>
+
+            <div class="acciones-barra">
+                <button id="btnHidratar" class="boton-mini boton-mini--texto" type="button" data-refrescar="hidratar" aria-label="Hidratar interfaz">💧<span class="etiqueta-boton"> Hidratar</span></button>
+                <div class="enlaces-contacto">
+                    <a href="https://wa.me/59178426903" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--chat" title="Mensaje directo" aria-label="Mensaje directo">💬</a>
+                    <a href="https://www.facebook.com/profile.php?id=100009459453658" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--perfil" title="Perfil" aria-label="Perfil">f</a>
+                    <a href="https://www.tiktok.com/@kaarelrmr" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--video" title="Videos" aria-label="Videos">♪</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
