@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>Página Personal - Carlos Rodolfo Morales Ruiz</title>
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#f97316">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mi Página">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script>
+        window.addEventListener("load", function () {
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("./sw.js").catch(function (error) {
+                    console.warn("No se pudo registrar el Service Worker:", error);
+                });
+            }
+        });
+    </script>
+</head>
+<body class="modo-oscuro">
+
+    <div class="aplicacion pwa-container">
+
+        <header class="cabecera" id="contenedorMenu" data-hidratado="false">
+            <button id="btnMenu" class="boton-icono boton-pendiente" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuPrincipal" data-desplegable="menuPrincipal" disabled>⏳</button>
+            <h1 class="titulo-vista" id="tituloVista">🏠 Inicio</h1>
+            <button id="btnRefrescar" class="boton-icono boton-pendiente" type="button" aria-label="Refrescar la vista actual" data-refrescar="vista" disabled><span class="icono-giro">🔄</span></button>
+            <button id="btnTema" class="boton-icono boton-pendiente" type="button" aria-label="Cambiar tema" disabled>Cargando…</button>
+        </header>
+
+        <nav id="menuPrincipal" class="menu-principal menu-desplegable" aria-label="Navegación principal">
+            <p class="menu-grupo">Secciones</p>
+            <button class="menu-enlace menu-enlace--activo" type="button" data-vista="inicio">🏠 Inicio</button>
+            <button class="menu-enlace" type="button" data-vista="pasatiempos">📌 Pasatiempos</button>
+            <button class="menu-enlace" type="button" data-vista="horario">📅 Horario</button>
+            <button class="menu-enlace" type="button" data-vista="musica">🎵 Música</button>
+            <button class="menu-enlace" type="button" data-vista="juegos">🎮 Juegos</button>
+            <button class="menu-enlace" type="button" data-vista="trabajos">📋 Trabajos</button>
+            <button class="menu-enlace" type="button" data-vista="frase">💬 Frase</button>
+            <p class="menu-grupo">Módulos</p>
+            <a class="menu-enlace menu-enlace--activo-modulo" href="index.html" aria-current="page">👤 Portafolio</a>
+            <a class="menu-enlace" href="index2.html">📦 Catálogo de proyectos</a>
+        </nav>
+
+        <main class="vistas">
+
+            <!-- INICIO -->
+            <section class="vista" id="vista-inicio">
+                <div class="portada" aria-label="Galería">
+                    <img class="diapositiva" src="devilmay.jpg" alt="Videojuego Devil May Cry" decoding="async">
+                    <img class="diapositiva" src="ciber.jpg" alt="Entorno de estudio" loading="lazy" decoding="async">
+                    <img class="diapositiva" src="lenguaje.jpg" alt="Aprendizaje de idiomas" loading="lazy" decoding="async">
+                </div>
+                <p class="presentacion"><strong>Carlos Rodolfo Morales Ruiz</strong><br><span>Diseño Web II · elige una sección</span></p>
+                <div class="accesos">
+                    <button class="acceso" type="button" data-ir="pasatiempos"><span>📌</span>Pasatiempos</button>
+                    <button class="acceso" type="button" data-ir="horario"><span>📅</span>Horario</button>
+                    <button class="acceso" type="button" data-ir="musica"><span>🎵</span>Música</button>
+                    <button class="acceso" type="button" data-ir="juegos"><span>🎮</span>Juegos</button>
+                    <button class="acceso" type="button" data-ir="trabajos"><span>📋</span>Trabajos</button>
+                    <button class="acceso" type="button" data-ir="frase"><span>💬</span>Frase</button>
+                </div>
+            </section>
+
+            <!-- PASATIEMPOS -->
+            <section class="vista" id="vista-pasatiempos">
+                <div class="acordeon">
+                    <div class="acordeon-item">
+                        <button class="acordeon-cabecera" type="button" aria-expanded="true">⏳ Pasatiempos (No productivo) <i>▾</i></button>
+                        <div class="acordeon-cuerpo" style="display:block">
+                            <ul class="lista-marcada">
+                                <li>Jugar videojuegos</li>
+                                <li>Escuchar música</li>
+                                <li>Nadar</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="acordeon-item">
+                        <button class="acordeon-cabecera" type="button" aria-expanded="false">🎯 Intereses (Productivo) <i>▾</i></button>
+                        <div class="acordeon-cuerpo">
+                            <ul class="lista-marcada">
+                                <li>Aprendiendo diferentes idiomas</li>
+                                <li>Estudiando ciberseguridad</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HORARIO -->
+            <section class="vista" id="vista-horario">
+                <table class="tabla-horario">
+                    <thead><tr><th>Hora</th><th>Actividad</th></tr></thead>
+                    <tbody>
+                        <tr data-inicio="7" data-fin="8"><td>7:00 — 8:00</td><td>Desayuno y preparación</td></tr>
+                        <tr data-inicio="8" data-fin="12"><td>8:00 — 12:00</td><td>Estudio</td></tr>
+                        <tr data-inicio="13" data-fin="14"><td>13:00 — 14:00</td><td>Almuerzo</td></tr>
+                        <tr data-inicio="15" data-fin="17"><td>15:00 — 17:00</td><td>Estudios y aprendizaje</td></tr>
+                        <tr data-inicio="18" data-fin="19"><td>18:00 — 19:00</td><td>Ejercicio o sacar a mi perro</td></tr>
+                        <tr data-inicio="20" data-fin="23"><td>20:00 — 23:00</td><td>Jugar o hacer mis trabajos</td></tr>
+                    </tbody>
+                </table>
+                <p class="nota-pie">La fila resaltada es la actividad de ahora.</p>
+            </section>
+
+            <!-- MÚSICA -->
+            <section class="vista" id="vista-musica">
+                <div class="filtros-dobles">
+                    <select id="selGenero" aria-label="Género">
+                        <option value="todos">Todos los géneros</option>
+                        <option value="romantica">💖 Romántica</option>
+                        <option value="rap">🎤 Rap</option>
+                        <option value="rock">🎸 Rock Industrial</option>
+                        <option value="regeton">🔥 Reguetón</option>
+                        <option value="techno">🎛️ Techno</option>
+                    </select>
+                    <select id="selArtista" aria-label="Artista" disabled>
+                        <option value="todos">Todos los artistas</option>
+                    </select>
+                </div>
+
+                <div class="cuadricula lista-paginada" data-lista="musica" data-por-pagina="4">
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="romantica" data-artista="Chayanne">
+                        <h3>Chayanne</h3><p>💖 Romántica · "Torero"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="romantica" data-artista="Ricardo Arjona">
+                        <h3>Ricardo Arjona</h3><p>💖 Romántica · "Historia de taxi"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="romantica" data-artista="José José">
+                        <h3>José José</h3><p>💖 Romántica · "El triste"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="rap" data-artista="Kanye West">
+                        <h3>Kanye West</h3><p>🎤 Rap · "Stronger"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="rap" data-artista="Tyler, the Creator">
+                        <h3>Tyler, the Creator</h3><p>🎤 Rap · "EARFQUAKE"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="rock" data-artista="Rammstein">
+                        <h3>Rammstein</h3><p>🎸 Rock Industrial · "Du hast"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="rock" data-artista="Nine Inch Nails">
+                        <h3>Nine Inch Nails</h3><p>🎸 Rock Industrial · "Closer"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="regeton" data-artista="Wisin y Yandel">
+                        <h3>Wisin y Yandel</h3><p>🔥 Reguetón · "Rakata"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="regeton" data-artista="Bad Bunny">
+                        <h3>Bad Bunny</h3><p>🔥 Reguetón · "Tití me preguntó"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="techno" data-artista="Aphex Twin">
+                        <h3>Aphex Twin</h3><p>🎛️ Techno · "Windowlicker"</p>
+                    </div>
+                    <div class="tarjeta tarjeta-musica elemento-lista" data-genero="techno" data-artista="Richie Hawtin">
+                        <h3>Richie Hawtin</h3><p>🎛️ Techno · "Spastik" (Plastikman)</p>
+                    </div>
+                </div>
+
+                <div class="paginador">
+                    <button class="boton-mini" type="button" data-pag="musica" data-dir="-1" aria-label="Página anterior">‹</button>
+                    <span data-pag-info="musica">1 / 1</span>
+                    <button class="boton-mini" type="button" data-pag="musica" data-dir="1" aria-label="Página siguiente">›</button>
+                </div>
+            </section>
+
+            <!-- JUEGOS -->
+            <section class="vista" id="vista-juegos">
+                <div class="barra-filtro">
+                    <span>Categoría: <b id="etiquetaJuegos">Todos</b></span>
+                    <div class="contenedor-menu">
+                        <button id="btnMenuJuegos" class="boton-mini boton-mini--texto" type="button" aria-expanded="false" aria-controls="menuJuegos" data-desplegable="menuJuegos">🕹️ Filtrar ▾</button>
+                        <div id="menuJuegos" class="menu-filtro menu-desplegable">
+                            <button class="menu-filtro-opcion" type="button" data-filtro="juegos" data-valor="todos">Ver Todos</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="juegos" data-valor="accion">Acción / Horror</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="juegos" data-valor="shooter">Shooter / FPS</button>
+                            <button class="menu-filtro-opcion" type="button" data-filtro="juegos" data-valor="indie">Indie / Roguelike</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cuadricula lista-paginada" data-lista="juegos" data-por-pagina="4">
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="accion" data-titulo="Resident Evil 4" data-descripcion="Survival Horror clásico con Leon S. Kennedy.">
+                        <img class="tarjeta-juego__img" src="resident.jpg" alt="Resident Evil 4" loading="lazy" decoding="async">
+                        <h3>Resident Evil 4</h3>
+                        <p>Acción / Survival Horror</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="accion" data-titulo="Devil May Cry 3" data-descripcion="Hack and slash frenético centrado en la juventud de Dante.">
+                        <img class="tarjeta-juego__img" src="devilmay.jpg" alt="Devil May Cry 3" loading="lazy" decoding="async">
+                        <h3>Devil May Cry 3</h3>
+                        <p>Acción Hack and Slash</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="shooter" data-titulo="Half-Life" data-descripcion="Shooter en primera persona que revolucionó la narrativa.">
+                        <img class="tarjeta-juego__img" src="half.jpg" alt="Half-Life" loading="lazy" decoding="async">
+                        <h3>Half-Life</h3>
+                        <p>Shooter / Ciencia Ficción</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="accion" data-titulo="Monster Hunter" data-descripcion="Acción y estrategia enfrentando bestias colosales.">
+                        <img class="tarjeta-juego__img" src="Rise.jpg" alt="Monster Hunter" loading="lazy" decoding="async">
+                        <h3>Monster Hunter</h3>
+                        <p>Acción y Caza</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="indie" data-titulo="The Binding of Isaac" data-descripcion="Roguelike con mazmorras aleatorias e intensos disparos.">
+                        <img class="tarjeta-juego__img" src="issac.jpg" alt="The Binding of Isaac" loading="lazy" decoding="async">
+                        <h3>The Binding of Isaac</h3>
+                        <p>Indie / Roguelike</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="shooter" data-titulo="Payday 2" data-descripcion="Shooter cooperativo de atracos de alto riesgo.">
+                        <img class="tarjeta-juego__img" src="Payday2.jpg" alt="Payday 2" loading="lazy" decoding="async">
+                        <h3>Payday 2</h3>
+                        <p>Shooter Cooperativo</p>
+                    </div>
+                    <div class="tarjeta-juego elemento-lista" role="button" tabindex="0" data-abrir-dialogo data-categoria="shooter" data-titulo="Payday 3" data-descripcion="Secuela táctica con gráficos modernizados.">
+                        <img class="tarjeta-juego__img" src="Payday3.jpg" alt="Payday 3" loading="lazy" decoding="async">
+                        <h3>Payday 3</h3>
+                        <p>Shooter Táctico</p>
+                    </div>
+                </div>
+
+                <div class="paginador">
+                    <button class="boton-mini" type="button" data-pag="juegos" data-dir="-1" aria-label="Página anterior">‹</button>
+                    <span data-pag-info="juegos">1 / 1</span>
+                    <button class="boton-mini" type="button" data-pag="juegos" data-dir="1" aria-label="Página siguiente">›</button>
+                </div>
+            </section>
+
+            <!-- TRABAJOS -->
+            <section class="vista" id="vista-trabajos">
+                <form id="formSolicitud" class="tarjeta formulario" novalidate>
+                    <div class="progreso">
+                        <span id="textoPaso">Paso 1 de 3</span>
+                        <div class="puntos"><i class="punto es-activo"></i><i class="punto"></i><i class="punto"></i></div>
+                    </div>
+
+                    <div class="paso-formulario" data-paso="0">
+                        <div class="campo-grupo" data-tipo="nombre">
+                            <label for="nombreCliente">1. Nombre completo (nombre y 2 apellidos)</label>
+                            <input type="text" id="nombreCliente" placeholder="Ej. Carlos Rodolfo Morales Ruiz" maxlength="60" autocomplete="name">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div class="campo-grupo" data-tipo="email">
+                            <label for="emailCliente">2. Correo electrónico</label>
+                            <input type="text" id="emailCliente" placeholder="Ej. correo@dominio.com" maxlength="60" autocomplete="email">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div class="campo-grupo" data-tipo="telefono">
+                            <label for="telefono">3. Teléfono (8 dígitos, inicia con 6 o 7)</label>
+                            <input type="text" id="telefono" placeholder="Ej. 78426903" maxlength="8" inputmode="numeric" autocomplete="tel">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                    </div>
+
+                    <div class="paso-formulario" data-paso="1">
+                        <div class="campo-grupo" data-tipo="servicio">
+                            <label for="tipoServicio">4. Tipo de servicio (solo letras)</label>
+                            <input type="text" id="tipoServicio" placeholder="Ej. Ciberseguridad" maxlength="40">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div class="campo-grupo" data-tipo="presupuesto">
+                            <label for="presupuesto">5. Presupuesto en Bs. (solo números)</label>
+                            <input type="text" id="presupuesto" placeholder="Ej. 500" maxlength="9" inputmode="numeric">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div class="campo-grupo" data-tipo="fecha">
+                            <label for="fechaLimite">6. Fecha límite de entrega (hoy o posterior)</label>
+                            <input type="date" id="fechaLimite">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                    </div>
+
+                    <div class="paso-formulario" data-paso="2">
+                        <div class="campo-grupo" data-tipo="descripcion">
+                            <label for="descripcion">7. Descripción (5 a 200 caracteres)</label>
+                            <input type="text" id="descripcion" placeholder="Detalle breve" maxlength="200">
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div class="campo-grupo" data-tipo="acepto">
+                            <div class="fila-casilla">
+                                <input type="checkbox" id="acepto">
+                                <label for="acepto">8. Acepto que me contacten por este proyecto</label>
+                            </div>
+                            <span class="mensaje-campo"></span>
+                        </div>
+                        <div id="cajaMensaje" aria-live="polite"></div>
+                    </div>
+
+                    <div class="navegacion-formulario">
+                        <button type="button" class="boton-secundario" id="btnAtras">‹ Atrás</button>
+                        <button type="button" class="boton-principal" id="btnSiguiente">Siguiente ›</button>
+                        <button type="submit" class="boton-principal" id="btnEnviar">Enviar Solicitud</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- FRASE -->
+            <section class="vista" id="vista-frase">
+                <div class="frase-destacada">
+                    "Sé extremadamente sutil, incluso hasta el punto de la informalidad."
+                    <span>— Sun Tzu</span>
+                </div>
+            </section>
+
+            <!-- DIÁLOGO DE DETALLE -->
+            <div id="dialogoDetalle" class="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogoTitulo">
+                <div class="dialogo-caja">
+                    <button class="dialogo-cerrar" type="button" data-cerrar-dialogo aria-label="Cerrar">&times;</button>
+                    <h3 id="dialogoTitulo">Título</h3>
+                    <p id="dialogoTexto">Descripción...</p>
+                </div>
+            </div>
+        </main>
+
+        <div id="avisoEstado" class="aviso-estado" role="status" aria-live="polite"></div>
+
+        <footer class="barra-inferior" id="contacto">
+            <span id="estadoRed" class="estado-red" role="status" aria-live="polite">
+                <i class="estado-red__punto"></i>
+                <span class="estado-red__texto" id="estadoRedTexto">En línea</span>
+            </span>
+
+            <div class="acciones-barra">
+                <button id="btnHidratar" class="boton-mini boton-mini--texto" type="button" data-refrescar="hidratar" aria-label="Hidratar interfaz">💧<span class="etiqueta-boton"> Hidratar</span></button>
+                <div class="enlaces-contacto">
+                    <a href="https://wa.me/59178426903" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--chat" title="Mensaje directo" aria-label="Mensaje directo">💬</a>
+                    <a href="https://www.facebook.com/profile.php?id=100009459453658" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--perfil" title="Perfil" aria-label="Perfil">f</a>
+                    <a href="https://www.tiktok.com/@kaarelrmr" target="_blank" rel="noopener noreferrer" class="enlace-contacto enlace-contacto--video" title="Videos" aria-label="Videos">♪</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
